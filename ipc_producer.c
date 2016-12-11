@@ -9,7 +9,7 @@
 #include "myfifo.h"
 
 int main(int argc, char* argv[]) {
-	const char studentId[PIPE_BUF+1] = "2011136084";
+	const char studentId[PIPE_BUF+1] = "2010136097";
 	char myPid[PIPE_BUF+1], consumerPid[PIPE_BUF+1], studentName[PIPE_BUF+1];	
 	sprintf(myPid, "%d", getpid());
 	if(access(PRODUCER_FIFO, F_OK)==-1) {
