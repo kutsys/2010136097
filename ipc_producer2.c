@@ -7,7 +7,7 @@
 
 char* shm = NULL;
 int main(int argc, char* argv[]) {
-	const char* studentId = "2011136084";
+	const char* studentId = "2010136097";
 	char myPid[16];	
 	sprintf(myPid, "%d", getpid());
 	char consumerPid[MYSHM_SIZE], studentName[MYSHM_SIZE];
