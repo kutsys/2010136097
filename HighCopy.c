@@ -1,88 +1,45 @@
-#include<unistd.h>
+#include <stdio.h>
+#include <time.h>
 
-#include<sys/stat.h>
+#define BUF_SIZE 1024
 
-#include<fcntl.h>
-
-#include<stdlib.h>
-
-#include<time.h>
-
-#include<string.h>
-
-#include<stdio.h>
-
-
-
-int main(char* argv[])
-
+int main(int argc, char* argv[])
 {
+	char buf[BUF_SIZE];
+	char* copysrc=NULL;
+	char* copydst=NULL;
+	FILE* srcfp = NULL;
+	FILE* dstfp = NULL;
+	int count = 0;
+	clock_t begin_clock = clock();
+	int printDotTerm = CLOCKS_PER_SEC / 1000;
 
-    char data[1024];
+	if(argc<=1 || argv[1]==NULL)
+		copysrc = "copysrc";
+	else
+		copysrc = argv[1];
+	if(argc<=2 || argv[2]==NULL)
+		copydst = "copied";
+	else
+		copydst = argv[2];
 
-    int nread;
-
-    FILE* in;
-
-    FILE* out;
-
-    clock_t newtime = 0;
-
-    clock_t oldtime = 0;
-
-    double ElapsedTime = 0.0;
-
-    char msg[16] = "Process in";
-
-
-
-    in = fopen("test.zip","rb");
-
-    out = fopen("copied.zip","wb");
-
-
-
-    write(1,msg,16);
-
-    
-
-    oldtime = clock();
-
-
-
-    while((nread = fread(data,sizeof(char),sizeof(data),in)) > 0){
-
-	
-
-	fwrite(data,sizeof(char),nread,out);
-
-	
-
-	newtime = clock();
-
-	ElapsedTime = (double)(newtime - oldtime)/CLOCKS_PER_SEC;
-
-
-
-	if(ElapsedTime >= 0.5) {
-
-	    oldtime = clock();
-
-            write(1,"*",1);
-
-	    fflush(stdout);
-
+	if((srcfp=fopen(copysrc, "r"))==NULL ||
+		(dstfp=fopen(copydst, "w"))==NULL){
+		printf(" !! file open error !!\n");
+		return -1;
 	}
 
-	
+	while((count=fread(buf, 1, BUF_SIZE, srcfp))>0){
+		fwrite(buf, 1, count, dstfp);
+		if(clock()-begin_clock >= printDotTerm){
+			putc('*', stdout);
+			fflush(stdout);
+			begin_clock = clock();
+		}
+	}
 
+	fclose(srcfp);
+	fclose(dstfp);
 
-
-    }
-
-    fclose(in);
-
-    fclose(out);
-
-
+	return 0;
 }
